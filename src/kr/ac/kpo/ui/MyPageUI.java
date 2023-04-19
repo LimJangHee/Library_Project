@@ -5,9 +5,9 @@ import java.util.Scanner;
 public class MyPageUI extends LibUI{
 	
 	private int menu() {
-		System.out.println("------------------------------------------");
+		System.out.println("----------------------------------------------");
 		System.out.println("\t 해당되는 항목을 선택하세요");
-		System.out.println("------------------------------------------");
+		System.out.println("----------------------------------------------");
 		System.out.println("1. 비밀번호수정");
 		System.out.println("2. 계정탈퇴");
 		System.out.println("3. 대여중인 도서목록");
@@ -23,6 +23,7 @@ public class MyPageUI extends LibUI{
 	public void execute() throws Exception {
 		
 		if(LibUI.isLogin == false) {
+			System.out.println("----------------------------------------------");
 			System.out.println("로그인이 되어있지 않아 로그인 페이지로 이동합니다.");
 			ILibUI ui = new LoginUI();
 			ui.execute();

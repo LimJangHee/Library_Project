@@ -50,11 +50,15 @@ public class LibService {
 		
 	}
 	
-	public LocalDate rentalBook(int no, LocalDate date) throws Exception {
+	public LocalDate rentalBook(String name, LocalDate date) throws Exception {
 		
-		return libdao.rentalBook(no, date);
+		return libdao.rentalBook(name, date);
 		
 		
+	}
+	
+	public void returnBook(String name) {
+		libdao.returnBook(name);
 	}
 	
 

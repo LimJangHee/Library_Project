@@ -152,7 +152,7 @@ public class LibDAO {
 			pstmt.setString(1, password2);
 			pstmt.setString(2, id);
 
-			ResultSet rs = pstmt.executeQuery();
+			pstmt.executeUpdate();
 			
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -169,7 +169,7 @@ public class LibDAO {
 
 			pstmt.setString(1, id);
 
-			ResultSet rs = pstmt.executeQuery();
+			pstmt.executeUpdate();
 			
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -180,8 +180,8 @@ public class LibDAO {
 	public void insertLibBook(BookVO book) {
 
 		StringBuilder sql = new StringBuilder();
-		sql.append("insert into t_book(no, name, writer, publisher ) ");
-		sql.append(" values(seq_t_book_no.nextval, ?, ?, ? ) ");
+		sql.append("insert into t_book(name, writer, publisher ) ");
+		sql.append(" values(?, ?, ? ) ");
 
 		try (Connection conn = new ConnectionFactory().getConnection();
 				PreparedStatement pstmt = conn.prepareStatement(sql.toString());) {
@@ -215,13 +215,13 @@ public class LibDAO {
 				pstmt.setString(1, detail);
 				ResultSet rs = pstmt.executeQuery();
 			while (rs.next()) {
-				int no = rs.getInt("no");
+				
 				String name = rs.getString("name");
 				String writer = rs.getString("writer");
 				String publisher = rs.getString("publisher");
 				
 
-				BookVO book = new BookVO(no, name, writer, publisher);
+				BookVO book = new BookVO(name, writer, publisher);
 
 
 				bookList.add(book);
@@ -234,17 +234,17 @@ public class LibDAO {
 		return bookList;
 	}
 	
-	public LocalDate rentalBook(int no, LocalDate date) throws Exception {
+	public LocalDate rentalBook(String name, LocalDate date) throws Exception {
 		
 		
 		
 		StringBuilder sql = new StringBuilder();
-	    sql.append("insert into t_rental_list(rental_no, user_id, book_no, rental_date, return_date) ");
+	    sql.append("insert into t_rental_list(rental_no, user_id, book_name, rental_date, return_date) ");
 	    sql.append("values(seq_t_rental_list.nextval, '");
-	    sql.append(LoginUI.userID);
-	    sql.append("', ");
-	    sql.append(no);
-	    sql.append(", '");
+	    sql.append(LibUI.userID);
+	    sql.append("', '");
+	    sql.append(name);
+	    sql.append("', '");
 	    sql.append(date);
 	    sql.append("', '");
 	    sql.append(date.plusWeeks(2));
@@ -254,14 +254,47 @@ public class LibDAO {
 	         PreparedStatement pstmt = conn.prepareStatement(sql.toString())) {
 	        pstmt.executeUpdate();
 	    } catch (Exception e) {
-	    	System.out.println("------------------------------------------");
-	    	System.out.println("\t   이미 대여중인 책입니다");
-			System.out.println("------------------------------------------");
-	        LibUI libui = new LibUI();
+	    	
+	    	
+	    	System.out.println("----------------------------------------------");
+	    	System.out.println("\t   이미 대여중인 책입니다.");
+	    	System.out.println("----------------------------------------------");
+	    	LibUI libui = new LibUI();
 	        libui.execute();
 	    }
 
 	    return date.plusWeeks(2);
+	}
+	
+	public void returnBook(String name) {
+		
+		StringBuilder sql = new StringBuilder();
+		sql.append("delete from t_rental_list where user_id = ? and book_name = ?");
+		
+		try (Connection conn = new ConnectionFactory().getConnection();
+				PreparedStatement pstmt = conn.prepareStatement(sql.toString())
+				){
+			pstmt.setString(1, LibUI.userID);
+			pstmt.setString(2, name);
+			
+			int cnt = pstmt.executeUpdate();
+			if(cnt > 0) {
+				System.out.println("----------------------------------------------");
+				System.out.println("\t*** 도서 반납이 완료되었습니다. ***");
+				System.out.println("----------------------------------------------");
+				
+			} else {
+				
+				System.out.println("----------------------------------------------");
+				System.out.println("\t 대여하지 않은 책입니다.");
+				System.out.println("----------------------------------------------");
+			}
+			
+		} catch (Exception e) {
+			
+			e.printStackTrace();
+			
+		}
 	}
 	
 }	

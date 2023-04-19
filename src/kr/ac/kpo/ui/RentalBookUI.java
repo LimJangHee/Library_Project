@@ -24,11 +24,13 @@ public class RentalBookUI extends LibUI {
 			}
 		
 		LocalDate date = LocalDate.now();
-		int no = scanInt("대여할 책 번호를 입력하세요 : ");
+		System.out.println("----------------------------------------------");
+		String name = scanStr("대여할 책명을 입력해주세요 : ");
 		
-		LocalDate returndate = libService.rentalBook(no,date);
-		System.out.println("대여 완료" + returndate +"까지 반납해주세요");
-		
+		LocalDate returndate = libService.rentalBook(name,date);
+		System.out.println("----------------------------------------------");
+		System.out.println("*** 대여 완료!" + returndate +"까지 반납해주세요. ***");
+		System.out.println("----------------------------------------------");
 		
 		
 	}
