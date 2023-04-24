@@ -5,9 +5,9 @@ import java.util.Scanner;
 public class AddMemberUI extends LibUI {
 	
 	private int menu() {
-		System.out.println("----------------------------------------------");
-		System.out.println("\t 해당되는 항목을 선택하세요");
-		System.out.println("----------------------------------------------");
+		System.out.println("-----------------------------------------------");
+		System.out.println("\t 해당되는 항목을 선택하세요.");
+		System.out.println("-----------------------------------------------");
 		System.out.println("1. 회원가입");
 		System.out.println("0. 이전화면으로");
 		Scanner sc = new Scanner(System.in);

@@ -7,11 +7,12 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+import kr.ac.kpo.ui.AdminLoginUI;
 import kr.ac.kpo.ui.LibUI;
-import kr.ac.kpo.ui.LoginUI;
 import kr.ac.kpo.util.ConnectionFactory;
 import kr.ac.kpo.vo.BookVO;
 import kr.ac.kpo.vo.MemberVO;
+import kr.ac.kpo.vo.RentalBookVO;
 
 public class LibDAO {
 
@@ -204,16 +205,28 @@ public class LibDAO {
 		List<BookVO> bookList = new ArrayList<>();
 
 		StringBuilder sql = new StringBuilder();
-		sql.append(
-				"select * from t_book where instr(");
-		sql.append(search);
-		sql.append(", ?) != 0 ");
+		
+		if (search.equals("all")) {
+			sql.append("select * from t_book ");
+		} else {
+		
+				sql.append(
+						"select * from t_book where instr(");
+				sql.append(search);
+				sql.append(", ?) != 0 ");
+		}
 
 		try (Connection conn = new ConnectionFactory().getConnection();
 				PreparedStatement pstmt = conn.prepareStatement(sql.toString());) {
 				
-				pstmt.setString(1, detail);
-				ResultSet rs = pstmt.executeQuery();
+				ResultSet rs = null;
+				if(search.equals("all")) {
+					rs = pstmt.executeQuery();
+				} else {
+					pstmt.setString(1, detail);
+					rs = pstmt.executeQuery();
+				}
+				
 			while (rs.next()) {
 				
 				String name = rs.getString("name");
@@ -257,7 +270,7 @@ public class LibDAO {
 	    	
 	    	
 	    	System.out.println("----------------------------------------------");
-	    	System.out.println("\t   이미 대여중인 책입니다.");
+	    	System.out.println("\t   이미 대여중이거나 존재하지 않는 책입니다.");
 	    	System.out.println("----------------------------------------------");
 	    	LibUI libui = new LibUI();
 	        libui.execute();
@@ -296,5 +309,149 @@ public class LibDAO {
 			
 		}
 	}
+	
+	public List<RentalBookVO> userRental(String id) {
+
+		List<RentalBookVO> bookList = new ArrayList<>();
+		
+		StringBuilder sql = new StringBuilder();
+		
+		if(id.equals("manager")) {
+			sql.append("select * from t_rental_list");
+		} else {
+			sql.append("select * from t_rental_list where user_id = ?");
+		}
+
+		
+		
+		
+
+		try (Connection conn = new ConnectionFactory().getConnection();
+				PreparedStatement pstmt = conn.prepareStatement(sql.toString());) {
+				
+				ResultSet rs = null;
+				
+				if(id.equals("manager")) {
+					rs = pstmt.executeQuery();					
+				} else {
+					pstmt.setString(1, id);
+					rs = pstmt.executeQuery();
+				}
+			
+								
+			while (rs.next()) {
+				
+				 int rental_no = rs.getInt("rental_no");
+				 String user_id = rs.getString("user_id");
+				 String book_name = rs.getString("book_name");
+				 java.sql.Date localrental_date = rs.getDate("rental_date");
+				 LocalDate rental_date = localrental_date.toLocalDate();
+				 java.sql.Date localreturn_date = rs.getDate("return_date");
+				 LocalDate return_date = localreturn_date.toLocalDate();
+				
+
+				RentalBookVO book = new RentalBookVO(rental_no, user_id, book_name, rental_date, return_date);
+
+
+				bookList.add(book);
+
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return bookList;
+	}
+	
+	public List<MemberVO> userInfo(String id) {
+
+		List<MemberVO> memberList = new ArrayList<>();
+
+		StringBuilder sql = new StringBuilder();
+		
+		if(id.equals("manager")) {
+			sql.append("select * from t_member");
+		} else {
+		sql.append("select * from t_member where ID = ?");
+		}
+
+		try (Connection conn = new ConnectionFactory().getConnection();
+				PreparedStatement pstmt = conn.prepareStatement(sql.toString());) {
+				
+				ResultSet rs = null;
+			
+				if(id.equals("manager")) {
+					rs = pstmt.executeQuery();					
+				} else {
+					pstmt.setString(1, id);
+					rs = pstmt.executeQuery();
+				}
+				
+				
+			while (rs.next()) {
+				
+				 String ID = rs.getString("ID");
+				 String password = rs.getString("password");
+				 String name = rs.getString("name");
+				 String birth = rs.getString("birth");
+				 String email = rs.getString("email");
+				 String phone = rs.getString("phone");
+					 
+
+				MemberVO member = new MemberVO(ID, password, name, birth, email, phone);
+
+
+				memberList.add(member);
+
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return memberList;
+	}
+	
+	public void deleteBook(String name) {
+
+		StringBuilder sql = new StringBuilder();
+		sql.append("delete from t_book where name = ? ");
+
+		try (Connection conn = new ConnectionFactory().getConnection();
+				PreparedStatement pstmt = conn.prepareStatement(sql.toString());) {
+
+			pstmt.setString(1, name);
+
+			pstmt.executeUpdate();
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+	}
+	
+	public boolean deleteEqualsID(String id) {
+
+		StringBuilder sql = new StringBuilder();
+		String id1 = null;
+		sql.append("select user_id from t_rental_list where user_id = ? ");
+		try (Connection conn = new ConnectionFactory().getConnection();
+				PreparedStatement pstmt = conn.prepareStatement(sql.toString());) {
+			pstmt.setString(1, id);
+			ResultSet rs = pstmt.executeQuery();
+			while (rs.next()) {
+				id1 = rs.getString("user_id");
+				if (id1.equals(id)) {
+					return true;
+
+				}
+
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
+	
 	
 }	

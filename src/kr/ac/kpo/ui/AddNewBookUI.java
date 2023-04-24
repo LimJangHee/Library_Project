@@ -16,10 +16,12 @@ private LibService libService;
 	@Override
 	public void execute() throws Exception {
 		
+		System.out.println("-----------------------------------------------");
 		String name = scanStr("등록할 책 제목을 입력하세요 : ");
 		String writer = scanStr("글쓴이를 입력하세요 : ");
 		String publisher = scanStr("출판사를 입력하세요 : ");
-
+		System.out.println("-----------------------------------------------");
+		
 		BookVO book = new BookVO();
 		book.setName(name);
 		book.setWriter(writer);
@@ -28,8 +30,9 @@ private LibService libService;
 		
 		libService.insertLibBook(book);
 		
-		System.out.println("새 책을 등록을 완료했습니다");
-		
+		System.out.println("-----------------------------------------------");
+		System.out.println("* * * 새 책을 등록을 완료했습니다 * * *");
+		System.out.println("-----------------------------------------------");
 		
 	}
 

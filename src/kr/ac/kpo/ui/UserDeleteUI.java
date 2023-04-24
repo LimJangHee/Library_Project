@@ -17,17 +17,24 @@ private LibService libService;
 	public void execute() throws Exception {
 
 		while (true) {
-			System.out.println("----------------------------------------------");
+			System.out.println("-----------------------------------------------");
 			String id = scanStr("ID를 입력하세요 : ");
-			System.out.println("----------------------------------------------");
+			System.out.println("-----------------------------------------------");
 			String password = scanStr("비밀번호를 입력하세요 :");
 			int no = libService.login(id, password);
 
 			if (no == 0) {
-				System.out.println("----------------------------------------------");
+				System.out.println("-----------------------------------------------");
 				System.out.println("잘못입력하셨습니다. 다시입력해주세요.");
+			} else if (libService.deleteEqualsID(id)) {
+				System.out.println("-----------------------------------------------");
+				System.out.println("\t대여중인 책이 있습니다!");
+				System.out.println("\t반납 후 탈퇴해주세요.");
+				System.out.println("-----------------------------------------------");
+				MyPageUI mp = new MyPageUI();
+				mp.execute();
 			} else {
-				System.out.println("----------------------------------------------");
+				System.out.println("-----------------------------------------------");
 				System.out.println("회원탈퇴하시겠습니까? ");
 				System.out.println("1. 예 ");
 				System.out.println("2. 아니요 ");
@@ -35,9 +42,9 @@ private LibService libService;
 				int type = sc.nextInt();
 				if (type == 1) {
 					libService.deleteUser(id);
-					System.out.println("----------------------------------------------");
+					System.out.println("-----------------------------------------------");
 					System.out.println("\t *** 회원탈퇴가 완료되었습니다. ***");
-					System.out.println("----------------------------------------------");
+					System.out.println("-----------------------------------------------");
 					LoginUI.isLogin = false;
 					super.execute();
 					break;

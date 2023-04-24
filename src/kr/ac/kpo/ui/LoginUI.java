@@ -6,9 +6,9 @@ public class LoginUI extends LibUI{
 	
 	
 	private int menu() {
-		System.out.println("------------------------------------------");
+		System.out.println("-----------------------------------------------");
 		System.out.println("\t 해당되는 항목을 선택하세요");
-		System.out.println("------------------------------------------");
+		System.out.println("-----------------------------------------------");
 		System.out.println("1. 일반회원 로그인");
 		System.out.println("2. 관리자 로그인");
 		System.out.println("0. 이전화면으로");
@@ -31,7 +31,7 @@ public class LoginUI extends LibUI{
 				ui = new UserLoginUI();
 				break;
 			case 2:
-//				ui = new AdminLoginUI();
+				ui = new AdminLoginUI();
 				break;
 			case 0:
 				super.execute();

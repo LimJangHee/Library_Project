@@ -6,12 +6,12 @@ import java.sql.DriverManager;
 public class ConnectionFactory {
 	
 	
-	public Connection getConnection() throws Exception { // 이부분 명명법 뭐지?
+	public Connection getConnection() throws Exception { 
 		
 		
 		Connection conn = null;
 		
-//		try {
+
 			Class.forName("oracle.jdbc.driver.OracleDriver");
 			
 			String url = "jdbc:oracle:thin:@localhost:1521:xe";
@@ -20,9 +20,7 @@ public class ConnectionFactory {
 			
 			conn = DriverManager.getConnection(url, user, password);
 			
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//		}
+
 		
 		return conn;
 	}
